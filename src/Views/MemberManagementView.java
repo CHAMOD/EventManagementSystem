@@ -1,9 +1,12 @@
 package Views;
 
+import Services.AuthenticationServices;
 import com.event.DaoImpl.MemberImpl;
 import com.event.DaoImpl.PersonImpl;
+import com.event.DaoImpl.TaskImpl;
 import com.event.DaoImpl.TeamImpl;
 import com.event.model.Member;
+import com.event.model.Task;
 import com.event.model.Team;
 import com.event.model.User;
 
@@ -16,11 +19,14 @@ public class MemberManagementView {
     TeamImpl teamDao;
     PersonImpl personDAO;
     MemberImpl memberDao;
+    TaskImpl taskDao;
 
     public MemberManagementView() {
         teamDao = new TeamImpl();
         personDAO = new PersonImpl();
         memberDao = new MemberImpl();
+        taskDao = new TaskImpl();
+
     }
 
 
@@ -38,6 +44,10 @@ public class MemberManagementView {
                 }
                 case Add: {
                     AddTeamMembers();
+                    break;
+                }
+                case Assign: {
+                    AssignTaskByAdmin();
                     break;
                 }
                 case Delete: {
@@ -71,6 +81,7 @@ public class MemberManagementView {
             System.out.println("[A]dd Team Members");
             System.out.println("[D]elete Team Members");
             System.out.println("[V]iew Team Member Details");
+            System.out.println("A[s]sign Tasks");
             System.out.println("[B]ack");
             System.out.println("E[x]it");
 
@@ -85,6 +96,10 @@ public class MemberManagementView {
                 case "A": {
                     return EnumMenu.Add;
                 }
+                case "S": {
+                    return EnumMenu.Assign;
+                }
+
                 case "D": {
                     return EnumMenu.Delete;
                 }
@@ -182,6 +197,69 @@ public class MemberManagementView {
         scanner.nextLine();
 
     }
+
+
+    /*Assign Task by admin*/
+    private void AssignTaskByAdmin() {
+
+        System.out.print("\n\n\n");
+        System.out.println("####Assign Task####");
+
+
+        ArrayList<Task> tasks = taskDao.GetAllTasksToAllocate();
+
+
+        for (int i = 0; i < tasks.size(); i++) {
+
+            Task task = tasks.get(i);
+
+            System.out.print(task.getTaskName() + " ( " + task.getIdTask() + " )\t");
+        }
+
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter ID of task:");
+        int idTask = Integer.parseInt(scanner.nextLine());
+
+        ArrayList<Team> teams = teamDao.GetAllTeams();
+
+        for (int i = 0; i < teams.size(); i++) {
+
+            Team team = teams.get(i);
+
+            System.out.print(team.getTeamName() + " ( " + team.getIdTeam() + " )\t");
+        }
+
+
+        System.out.print("Enter ID of team: ");
+        int idTeam = Integer.parseInt(scanner.nextLine());
+
+
+
+
+        ArrayList<Member> members = memberDao.GetAllTeamMembers(idTeam);
+
+        for (int i = 0; i < members.size(); i++) {
+
+            Member member = members.get(i);
+
+            System.out.println(member.getNameMember() + " ( " + member.getIdMember() + " )");
+        }
+        System.out.print("Enter ID of Member: ");
+        int idMember = Integer.parseInt(scanner.nextLine());
+
+
+        taskDao.insertTaskByLead(idMember, idTask);
+
+        System.out.print("\n\n\n");
+        System.out.println("Task is assigned successfully");
+        System.out.println("Press [Enter] to continue");
+        scanner.nextLine();
+
+
+    }
+
 
     /*view team members by admin*/
     public void ListTeamMembers() {
