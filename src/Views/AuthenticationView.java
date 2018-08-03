@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class AuthenticationView {
 
-    public void Run() throws FileNotFoundException, IOException, InstantiationException, IllegalAccessException, ParseException {
+    public void Run()  {
 
         while (AuthenticationServices.getInstance().getLoggedUser() == null) {
             System.out.print("\n\n");

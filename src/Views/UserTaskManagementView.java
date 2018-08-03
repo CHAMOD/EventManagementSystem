@@ -8,6 +8,8 @@ import com.event.DaoImpl.TeamImpl;
 import com.event.model.Task;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -49,7 +51,7 @@ public class UserTaskManagementView {
                     break;
                 }
                 case View: {
-                    View();
+                    ViewTask();
                     break;
                 }
                 case Back: {
@@ -73,8 +75,7 @@ public class UserTaskManagementView {
 
             System.out.println("[L]ist All Tasks");
             System.out.println("[A]dd Status Task");
-//			System.out.println("[D]elete Team Members");
-//			System.out.println("[V]iew Team Member Details");
+			System.out.println("[V]iew Task");
             System.out.println("[B]ack");
             System.out.println("E[x]it");
 
@@ -213,9 +214,57 @@ public class UserTaskManagementView {
     }
 
     /*view task details by member*/
-    public void View() {
+    public void ViewTask() {
+
+        java.sql.Date date = getCurrentDatetime();
+        Scanner scanner = new Scanner(System.in);
+
+        int idMember = AuthenticationServices.getInstance().getLoggedUser().getIdUser();
 
 
+        ArrayList<Task> tasks = taskDao.GetAllTasksByMember(idMember);
+
+        for (int i = 0; i < tasks.size(); i++) {
+
+            Task task = tasks.get(i);
+
+            System.out.print(task.getTaskName() + " ( " + task.getIdTask() + " )\t");
+        }
+
+
+        System.out.print("Enter ID of Task: ");
+        int idTask = Integer.parseInt(scanner.nextLine());
+
+        Task task1 = taskDao.GetByTaskId(idTask);
+
+
+        System.out.print("\n\n\n");
+        System.out.println("Task ID:" + task1.getIdTask());
+        System.out.println("Task Name:" + task1.getTaskName());
+        System.out.println("Task Duration:" + task1.getDuration());
+        System.out.println("Created Date:" + task1.getDateCreate());
+        System.out.println("Current Status:" + task1.getStatus());
+        System.out.println("Assigned member:" + task1.getAssignedMemberName());
+        System.out.println("Created User:" + task1.getCreatedUserName());
+
+
+        Long differenceOfDates=ChronoUnit.DAYS.between(LocalDate.parse(task1.getDateCreate().toString()),LocalDate.parse(date.toString()));
+        System.out.println("---------------------------------");
+
+        if(differenceOfDates<task1.getDuration()){
+        System.out.println("Remaining dates:"+(task1.getDuration()-differenceOfDates));
+        }
+        else {
+
+            System.out.println("you are delayed");
+            System.out.println("you have got additional "+(differenceOfDates-task1.getDuration())+" days");
+
+
+        }
+
+
+        System.out.println("\nPress [Enter] to continue");
+        scanner.nextLine();
     }
 
 
@@ -224,5 +273,9 @@ public class UserTaskManagementView {
 
     }
 
+    public java.sql.Date getCurrentDatetime() {
+        java.util.Date today = new java.util.Date();
+        return new java.sql.Date(today.getTime());
+    }
 
 }

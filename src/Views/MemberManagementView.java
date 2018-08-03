@@ -236,8 +236,6 @@ public class MemberManagementView {
         int idTeam = Integer.parseInt(scanner.nextLine());
 
 
-
-
         ArrayList<Member> members = memberDao.GetAllTeamMembers(idTeam);
 
         for (int i = 0; i < members.size(); i++) {
