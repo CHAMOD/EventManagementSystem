@@ -22,7 +22,12 @@ public class AuthenticationView {
             System.out.print("Password: ");
             String password = scanner.nextLine();
 
-            AuthenticationServices.getInstance().AuthenticateUser(username, password);
+           boolean isAuthenticated= AuthenticationServices.getInstance().AuthenticateUser(username, password);
+
+           if(!isAuthenticated){
+               System.out.print("Username or Password is wrong! ");
+
+           }
         }
 
     }

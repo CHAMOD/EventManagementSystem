@@ -28,8 +28,13 @@ public class AuthenticationServices {
         return authenticatedUser;
     }
 
-    public void AuthenticateUser(String username, String password) {
+    public boolean AuthenticateUser(String username, String password) {
 
         this.authenticatedUser = personDAO.GetByUsernameAndPassword(username, password);
+
+        if(this.authenticatedUser!=null)
+            return true;
+        else
+            return false;
     }
 }
