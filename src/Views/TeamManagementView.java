@@ -290,6 +290,7 @@ public class TeamManagementView {
         team1.setTeamName(scanner.nextLine());
 
         System.out.print("Do you want to Change Team lead. [Y]/[N]:");
+        scanner.nextLine();
         String choice = scanner.nextLine();
 
         if (choice.toUpperCase().equals("Y")) {
